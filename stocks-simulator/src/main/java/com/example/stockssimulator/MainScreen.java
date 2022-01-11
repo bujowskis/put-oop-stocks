@@ -9,6 +9,8 @@ import java.io.IOException;
 
 /*
  * BACKEND
+ * todo - random seed by current date or smth
+ * todo - do the documentation in nice way
  *
  * FRONTEND
  * todo - starting welcome screen w. option for a tutorial see through
@@ -23,6 +25,8 @@ import java.io.IOException;
  * Handles the main screen of the application
  */
 public class MainScreen extends Application {
+    private boolean running = false;  // indicates if the simulation is running or not todo - notifying Investors (?)
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainScreen.class.getResource("main-view.fxml"));
@@ -39,5 +43,9 @@ public class MainScreen extends Application {
      */
     public static void main(String[] args) {
         launch();
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }
