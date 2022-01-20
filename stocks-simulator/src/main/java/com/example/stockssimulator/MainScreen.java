@@ -12,6 +12,7 @@ import java.io.IOException;
  * todo - random seed by current date or smth
  * todo - do the documentation in nice way
  * todo - add user interactive experience (once simulated done)
+ * todo - force-stop simulation
  *
  * FRONTEND
  * todo - starting welcome screen w. option for a tutorial see through

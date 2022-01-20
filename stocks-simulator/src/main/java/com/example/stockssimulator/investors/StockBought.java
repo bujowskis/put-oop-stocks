@@ -1,4 +1,4 @@
-package com.example.stockssimulator;
+package com.example.stockssimulator.investors;
 
 /**
  * A single order of some specific stock, that an Investor owns
@@ -15,9 +15,10 @@ public class StockBought {
     private float gain_bound;
     private float loss_bound;
     private int wait_time;
+    private float volume;
 
     public StockBought(String ticker, float initial_value, int initial_time, float gain_bound, float loss_bound,
-                       int wait_time) {
+                       int wait_time, float volume) {
         this.ticker = ticker;
         this.initial_value = initial_value;
         this.initial_time = initial_time;
@@ -55,7 +56,7 @@ public class StockBought {
      * @param current_time current time of the simulation todo - make StockBought access it itself
      * @return true if waiting time passed,
      */
-    public boolean checkWaitTime(float current_time) {
+    public boolean checkWaitTime(int current_time) {
         return current_time - initial_time >= wait_time;
     }
 

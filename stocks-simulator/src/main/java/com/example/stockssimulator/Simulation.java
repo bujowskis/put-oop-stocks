@@ -5,6 +5,7 @@ import com.example.stockssimulator.investors.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.lang.Math;
+import java.util.HashMap;
 
 /**
  * Contains all the functionalities regards the Simulation.
@@ -19,7 +20,8 @@ public class Simulation {
     private final float[] default_investors_proportions = {0.2f, 0.5f, 0.2f, 0.1f}; // todo - adjust (see javadoc below)
     private int time;
     private String time_string; // todo
-    // todo - add csv reader class and functionalities
+    private int time_rate = 1;
+    private final int data = 1; // todo - add csv reader class and functionalities
 
     /**
      * Creates a new instance of Simulation.
@@ -146,5 +148,24 @@ public class Simulation {
 
     public MainScreen getMainScreen() {
         return mainScreen;
+    }
+
+    public int getTime_rate() {
+        return time_rate;
+    }
+
+    public void setTime_rate(int time_rate) {
+        if (time_rate < 1) {
+            throw new Error("lowest time_rate is 1min/1min");
+        }
+        this.time_rate = time_rate;
+    }
+
+    public int getData() {
+        return data;
+    }
+
+    public int getTime() {
+        return time;
     }
 }

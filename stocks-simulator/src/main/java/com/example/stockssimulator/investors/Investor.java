@@ -1,8 +1,6 @@
 package com.example.stockssimulator.investors;
 
-import com.example.stockssimulator.MainScreen;
 import com.example.stockssimulator.Simulation;
-import com.example.stockssimulator.StockBought;
 
 import java.util.ArrayList;
 
@@ -31,7 +29,7 @@ public abstract class Investor {
     private int risk_loss_lower;
     private int wait_time_upper;
     private int wait_time_lower;
-    private ArrayList<StockBought> stockBoughtAL = new ArrayList<StockBought>();
+    private ArrayList<StockBought> stockBoughtAL = new ArrayList<>();
 
     /** todo - format
      * Creates an Investor;
@@ -75,21 +73,29 @@ public abstract class Investor {
         if (simulation == null || simulation.isRunning()) {
             throw new Error("Cannot run investor, when simulation is not started or uninitialized");
         }
-        // todo
+        // todo -
+        // todo - listen for time_rate change
     }
 
     /**
      * Buys a randomly chosen stock
      */
     private void buyRandomStock() {
-        // todo
+        // todo - buy "by money"; i.e. specify value of order, convert it to how much stock is it
+        // todo - buy "by proportion"; i.e. how much stock do you want
     }
 
     /**
      * Checks the owned StocksBought
      */
     private void checkStocksBought() {
-        // todo
+        for (StockBought stock_bought : this.stockBoughtAL) {
+            if (stock_bought.checkUpper(this.simulation.getData())
+                    || stock_bought.checkLower(this.simulation.getData())
+                    || stock_bought.checkWaitTime(this.simulation.getTime())) {
+
+            }
+        }
     }
 
     public ArrayList<StockBought> getStockBoughtAL() {
