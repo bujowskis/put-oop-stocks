@@ -1,4 +1,9 @@
-package com.example.stockssimulator;
+package com.example.stockssimulator.investors;
+
+import com.example.stockssimulator.MainScreen;
+import com.example.stockssimulator.StockBought;
+
+import java.util.ArrayList;
 
 /** todo - format
  * Specifies what's common for all types of investors.
@@ -25,6 +30,7 @@ public abstract class Investor {
     private int risk_loss_lower;
     private int wait_time_upper;
     private int wait_time_lower;
+    private ArrayList<StockBought> stockBoughtAL = new ArrayList<StockBought>();
 
     /** todo - format
      * Creates an Investor;
@@ -65,9 +71,27 @@ public abstract class Investor {
      * Runs the investor; i.e. starts its trading process
      */
     public void run() {
-        if (!mainScreen.isRunning()) {
-            throw new Error("Cannot run investor, when simulation is not started");
+        if (mainScreen.getSimulation() == null || !mainScreen.getSimulation().isRunning()) {
+            throw new Error("Cannot run investor, when simulation is not started or uninitialized");
         }
         // todo
+    }
+
+    /**
+     * Buys a randomly chosen stock
+     */
+    private void buyRandomStock() {
+        // todo
+    }
+
+    /**
+     * Checks the owned StocksBought
+     */
+    private void checkStocksBought() {
+        // todo
+    }
+
+    public ArrayList<StockBought> getStockBoughtAL() {
+        return stockBoughtAL;
     }
 }

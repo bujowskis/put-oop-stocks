@@ -25,7 +25,7 @@ import java.io.IOException;
  * Handles the main screen of the application
  */
 public class MainScreen extends Application {
-    private boolean running = false;  // indicates if the simulation is running or not todo - notifying Investors (?)
+    private Simulation simulation = null;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -45,7 +45,7 @@ public class MainScreen extends Application {
         launch();
     }
 
-    public boolean isRunning() {
-        return running;
+    public Simulation getSimulation() {
+        return simulation;
     }
 }

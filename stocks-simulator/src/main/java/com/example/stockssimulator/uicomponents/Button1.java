@@ -1,4 +1,4 @@
-package com.example.stockssimulator;
+package com.example.stockssimulator.uicomponents;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
