@@ -11,14 +11,15 @@ import java.io.IOException;
  * BACKEND
  * todo - random seed by current date or smth
  * todo - do the documentation in nice way
+ * todo - add user interactive experience (once simulated done)
  *
  * FRONTEND
  * todo - starting welcome screen w. option for a tutorial see through
  *  - option to turn that off "I'm fine, thanks"
  *  - show what can be found and where
- *
  * todo - options menu
  *  - preferences - fullscreen, height and width specification, font sizes and such
+ * todo - add listing based on Investor type (Cautious, Normal, Risky, Crazy separately, or show all)
  */
 
 /**

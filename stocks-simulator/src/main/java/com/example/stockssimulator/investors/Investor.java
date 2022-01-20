@@ -1,6 +1,7 @@
 package com.example.stockssimulator.investors;
 
 import com.example.stockssimulator.MainScreen;
+import com.example.stockssimulator.Simulation;
 import com.example.stockssimulator.StockBought;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  * - they waited for 16 minutes, and they neither reached desired gain nor maximum accepted loss
  */
 public abstract class Investor {
-    private MainScreen mainScreen;
+    private Simulation simulation;
     private int risk_gain_upper;
     private int risk_gain_lower;
     private int risk_loss_upper;
@@ -38,7 +39,7 @@ public abstract class Investor {
      * - wait times are specified in minutes and must be greater than 0
      * - upper bounds must be greater or equal lower bounds
      *
-     * @param mainScreen reference to the simulation instance
+     * @param simulation reference to the simulation instance
      * @param risk_gain_upper upper bound for the randomized risk gain, at which the given stock will be sold
      * @param risk_gain_lower lower --||--
      * @param risk_loss_upper upper bound for the randomized risk loss, at which the given stock will be sold
@@ -46,9 +47,9 @@ public abstract class Investor {
      * @param wait_time_upper upper bound for the wait time, at which the given stock will be sold
      * @param wait_time_lower lower --||--
      */
-    public Investor(MainScreen mainScreen, int risk_gain_upper, int risk_gain_lower, int risk_loss_upper,
+    public Investor(Simulation simulation, int risk_gain_upper, int risk_gain_lower, int risk_loss_upper,
                     int risk_loss_lower, int wait_time_upper, int wait_time_lower) {
-        if (mainScreen == null) {
+        if (simulation == null) {
             throw new Error("No reference to simulation");
         }
         if (risk_gain_upper <= 0 || risk_gain_lower <= 0 || risk_loss_upper <= 0 || risk_loss_lower <= 0 ||
@@ -71,7 +72,7 @@ public abstract class Investor {
      * Runs the investor; i.e. starts its trading process
      */
     public void run() {
-        if (mainScreen.getSimulation() == null || !mainScreen.getSimulation().isRunning()) {
+        if (simulation == null || simulation.isRunning()) {
             throw new Error("Cannot run investor, when simulation is not started or uninitialized");
         }
         // todo

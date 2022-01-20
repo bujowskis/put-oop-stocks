@@ -1,6 +1,6 @@
 package com.example.stockssimulator;
 
-import com.example.stockssimulator.investors.Investor;
+import com.example.stockssimulator.investors.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,11 +11,14 @@ import java.lang.Math;
  * Keeps the MainScreen clean and separated from "the backend".
  */
 public class Simulation {
+    private MainScreen mainScreen;
     private boolean running = false;
-    private boolean ended = false;
+    private boolean finished = false;
     // private boolean paused = false; // todo - consider pause option
-    private ArrayList<Investor> investors = new ArrayList<>();
+    private final ArrayList<Investor> investors;
     private final float[] default_investors_proportions = {0.2f, 0.5f, 0.2f, 0.1f}; // todo - adjust (see javadoc below)
+    private int time;
+    private String time_string; // todo
     // todo - add csv reader class and functionalities
 
     /**
@@ -27,14 +30,17 @@ public class Simulation {
      *                     - single int - investors number given, but number of Investors types deduced based on default proportions
      *                     - four ints given, number of particular Investors types given (Cautious, Normal, Risky, Crazy)
      */
-    public Simulation(int stocks_no, int... investors_no) throws IllegalArgumentException {
+    public Simulation(MainScreen mainScreen, int stocks_no, int... investors_no) throws IllegalArgumentException {
         // check the inputs
+        if (mainScreen == null) {
+            throw new Error("mainScreen=null");
+        }
         if (stocks_no < 1) { // todo - add upper limit based on csv
             throw new IllegalArgumentException("stocks_no<1");
         }
         int[] investors_numbers = new int[4];
         switch (investors_no.length) {
-            case 0: {
+            case 0 -> {
                 // deduce both number and types
                 int investors_total = (int) Math.ceil((float) stocks_no / 5); // todo - adjust mapping from stocks_no
                 int investors_left = investors_total;
@@ -50,7 +56,7 @@ public class Simulation {
                 }
                 investors_numbers[1] = investors_left;
             }
-            case 1: {
+            case 1 -> {
                 // deduce only types
                 if (investors_no[0] < 1) {
                     throw new IllegalArgumentException("investors_no<1");
@@ -69,7 +75,7 @@ public class Simulation {
                 }
                 investors_numbers[1] = investors_left;
             }
-            case 4: {
+            case 4 -> {
                 // number of particular Investors given
                 int investors_no_sum = Arrays.stream(investors_no).sum();
                 if (investors_no_sum < 1) {
@@ -83,11 +89,27 @@ public class Simulation {
                     }
                 }
             }
-            default:
-                throw new IllegalArgumentException("investors_no.length-unsupported");
+            default -> throw new IllegalArgumentException("investors_no.length-unsupported");
         }
         // create ArrayList of Investors, according to investors_numbers
-        // todo
+        // todo - add names to Investors
+        this.mainScreen = mainScreen;
+        ArrayList<Investor> investors = new ArrayList<>();
+        while (investors_numbers[0]-- > 0) {
+            investors.add(new CautiousInvestor(mainScreen.getSimulation()));
+        }
+        while (investors_numbers[1]-- > 0) {
+            investors.add(new NormalInvestor(mainScreen.getSimulation()));
+        }
+        while (investors_numbers[2]-- > 0) {
+            investors.add(new RiskyInvestor(mainScreen.getSimulation()));
+        }
+        while (investors_numbers[3]-- > 0) {
+            investors.add(new CrazyInvestor(mainScreen.getSimulation()));
+        }
+        this.investors = investors;
+        // todo - read the data from .csv
+        // todo - initialize time, starting from first time of .csv
     }
 
     /**
@@ -95,6 +117,15 @@ public class Simulation {
      */
     public void start() {
         // todo
+    }
+
+    /**
+     * Converts current time of the simulation to HH:MM format used in .csv file containing stocks data
+     * @return current time in form HH:MM
+     */
+    public String convertTimeToString() {
+        // todo
+        return "";
     }
 
     public boolean isRunning() {
@@ -105,11 +136,15 @@ public class Simulation {
         return investors;
     }
 
-    public boolean isEnded() {
-        return ended;
+    public boolean isFinished() {
+        return finished;
     }
 
-    public void setEnded(boolean ended) {
-        this.ended = ended;
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public MainScreen getMainScreen() {
+        return mainScreen;
     }
 }
