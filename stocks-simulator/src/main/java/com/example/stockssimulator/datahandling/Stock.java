@@ -17,5 +17,6 @@ public class Stock {
 
     public Stock(String ticker, String company_name, String sector_name, String industry_name, String country_name,
                  HashMap<String, List<OHLCV>> data_ohlcv) {
+        // todo
     }
 }
