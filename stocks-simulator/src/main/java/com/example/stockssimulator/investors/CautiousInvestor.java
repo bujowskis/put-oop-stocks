@@ -3,6 +3,7 @@ package com.example.stockssimulator.investors;
 import com.example.stockssimulator.Simulation;
 
 public class CautiousInvestor extends Investor {
+    private static int number = 0;
     /**
      * Creates a CautiousInvestor. This Investor:
      * - sets the gain interval between 0.3 and 0.7%
@@ -12,6 +13,7 @@ public class CautiousInvestor extends Investor {
      */
     public CautiousInvestor(Simulation simulation) {
         // todo - adjust values, update javadoc if changed
-        super(simulation, 7, 3, 4, 2, 20, 10);
+        super(simulation, "Cautious-" + number, 7, 3, 4, 2, 20, 10);
+        number++;
     }
 }

@@ -15,7 +15,7 @@ public class StockBought {
     private float gain_bound;
     private float loss_bound;
     private int wait_time;
-    private float volume;
+    private float volume; // todo - consider final
 
     public StockBought(String ticker, float initial_value, int initial_time, float gain_bound, float loss_bound,
                        int wait_time, float volume) {
@@ -25,6 +25,7 @@ public class StockBought {
         this.gain_bound = gain_bound;
         this.loss_bound = loss_bound;
         this.wait_time = wait_time;
+        this.volume = volume;
     }
 
     /**
@@ -68,6 +69,10 @@ public class StockBought {
         return initial_value;
     }
 
+    public int getInitial_time() {
+        return initial_time;
+    }
+
     public float getGain_bound() {
         return gain_bound;
     }
@@ -90,5 +95,13 @@ public class StockBought {
 
     public void setWait_time(int wait_time) {
         this.wait_time = wait_time;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
     }
 }

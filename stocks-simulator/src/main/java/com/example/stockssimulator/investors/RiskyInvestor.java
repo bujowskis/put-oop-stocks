@@ -3,6 +3,7 @@ package com.example.stockssimulator.investors;
 import com.example.stockssimulator.Simulation;
 
 public class RiskyInvestor extends Investor {
+    private static int number = 0;
     /**
      * Creates a RiskyInvestor. This Investor:
      * - sets the gain interval between 0.8 and 2.0%
@@ -12,6 +13,7 @@ public class RiskyInvestor extends Investor {
      */
     public RiskyInvestor(Simulation simulation) {
         // todo - adjust values, update javadoc if changed
-        super(simulation, 20, 8, 10, 6, 35, 20);
+        super(simulation, "Risky-" + number, 20, 8, 10, 6, 35, 20);
+        number++;
     }
 }

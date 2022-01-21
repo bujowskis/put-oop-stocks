@@ -1,6 +1,7 @@
 package com.example.stockssimulator.investors;
 
 import com.example.stockssimulator.Simulation;
+import com.example.stockssimulator.datahandling.OHLCV;
 
 import java.util.ArrayList;
 
@@ -23,12 +24,17 @@ import java.util.ArrayList;
  */
 public abstract class Investor {
     private Simulation simulation;
+    // todo - consider making the following final
+    private String nickname;
     private int risk_gain_upper;
     private int risk_gain_lower;
     private int risk_loss_upper;
     private int risk_loss_lower;
     private int wait_time_upper;
     private int wait_time_lower;
+    // skipping unnecessary stock checking
+    private int last_checked_time = -1;
+
     private ArrayList<StockBought> stockBoughtAL = new ArrayList<>();
 
     /** todo - format
@@ -38,6 +44,7 @@ public abstract class Investor {
      * - upper bounds must be greater or equal lower bounds
      *
      * @param simulation reference to the simulation instance
+     * @param nickname nickname to differentiate the Investor
      * @param risk_gain_upper upper bound for the randomized risk gain, at which the given stock will be sold
      * @param risk_gain_lower lower --||--
      * @param risk_loss_upper upper bound for the randomized risk loss, at which the given stock will be sold
@@ -45,10 +52,16 @@ public abstract class Investor {
      * @param wait_time_upper upper bound for the wait time, at which the given stock will be sold
      * @param wait_time_lower lower --||--
      */
-    public Investor(Simulation simulation, int risk_gain_upper, int risk_gain_lower, int risk_loss_upper,
+    public Investor(Simulation simulation, String nickname, int risk_gain_upper, int risk_gain_lower, int risk_loss_upper,
                     int risk_loss_lower, int wait_time_upper, int wait_time_lower) {
         if (simulation == null) {
             throw new Error("No reference to simulation");
+        }
+        if (nickname == null) {
+            this.nickname = "default-" + simulation.getDefault_investor_number();
+            simulation.add1ToDefaultInvestorNumber();
+        } else {
+            this.nickname = nickname;
         }
         if (risk_gain_upper <= 0 || risk_gain_lower <= 0 || risk_loss_upper <= 0 || risk_loss_lower <= 0 ||
                 wait_time_upper <= 0 || wait_time_lower <= 0) {
@@ -89,13 +102,22 @@ public abstract class Investor {
      * Checks the owned StocksBought
      */
     private void checkStocksBought() {
+        // check only if time changed
+        if (this.simulation.getTime() != this.last_checked_time) {
+            return;
+        }
+        // todo
         for (StockBought stock_bought : this.stockBoughtAL) {
-            if (stock_bought.checkUpper(this.simulation.getData())
-                    || stock_bought.checkLower(this.simulation.getData())
-                    || stock_bought.checkWaitTime(this.simulation.getTime())) {
-
+            // fixme
+            OHLCV ohlcv = this.simulation.getData().getOhlcvAtTimestamp(stock_bought.getTicker(), this.simulation.getTime_string());
+            if (stock_bought.checkUpper(ohlcv.getClose())
+                || stock_bought.checkUpper(ohlcv.getClose())
+                || stock_bought.checkWaitTime(this.simulation.getTime())) {
+                // sell the stock
+                // todo
             }
         }
+        this.last_checked_time = this.simulation.getTime();
     }
 
     public ArrayList<StockBought> getStockBoughtAL() {

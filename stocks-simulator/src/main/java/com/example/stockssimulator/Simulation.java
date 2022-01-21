@@ -1,11 +1,12 @@
 package com.example.stockssimulator;
 
+import com.example.stockssimulator.datahandling.Data;
 import com.example.stockssimulator.investors.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.lang.Math;
-import java.util.HashMap;
 
 /**
  * Contains all the functionalities regards the Simulation.
@@ -18,10 +19,12 @@ public class Simulation {
     // private boolean paused = false; // todo - consider pause option
     private final ArrayList<Investor> investors;
     private final float[] default_investors_proportions = {0.2f, 0.5f, 0.2f, 0.1f}; // todo - adjust (see javadoc below)
+    private int default_investor_number = 0;
     private int time;
     private String time_string; // todo
+    private int end_time;
     private int time_rate = 1;
-    private final int data = 1; // todo - add csv reader class and functionalities
+    private final Data data;
 
     /**
      * Creates a new instance of Simulation.
@@ -40,6 +43,27 @@ public class Simulation {
         if (stocks_no < 1) { // todo - add upper limit based on csv
             throw new IllegalArgumentException("stocks_no<1");
         }
+        try {
+            // todo - pass relative / user-defined path
+            this.data = new Data(this, "stocks-simulator/src/main/resources/data/",
+                    "stocks-simulator/src/main/resources/");
+        } catch (IOException e) {
+            // todo - add best handling
+            e.printStackTrace();
+            throw new Error("IOException - didn't initialize Data");
+        } catch (IllegalArgumentException iae) {
+            // todo - add best handling
+            throw new Error("IllegalArgumentException - didn't initialize Data");
+        }
+        boolean overflow = this.data.addStocks(stocks_no);
+        if (overflow) {
+            // todo - consider doing something here
+        }
+        stocks_no = this.data.getStocks().size();
+        this.time = this.data.getStart_time();
+        this.time_string = Data.convertTimeIntToString(this.time);
+        this.end_time = this.data.getEnd_time();
+
         int[] investors_numbers = new int[4];
         switch (investors_no.length) {
             case 0 -> {
@@ -94,7 +118,6 @@ public class Simulation {
             default -> throw new IllegalArgumentException("investors_no.length-unsupported");
         }
         // create ArrayList of Investors, according to investors_numbers
-        // todo - add names to Investors
         this.mainScreen = mainScreen;
         ArrayList<Investor> investors = new ArrayList<>();
         while (investors_numbers[0]-- > 0) {
@@ -110,8 +133,6 @@ public class Simulation {
             investors.add(new CrazyInvestor(mainScreen.getSimulation()));
         }
         this.investors = investors;
-        // todo - read the data from .csv
-        // todo - initialize time, starting from first time of .csv
     }
 
     /**
@@ -119,15 +140,6 @@ public class Simulation {
      */
     public void start() {
         // todo
-    }
-
-    /**
-     * Converts current time of the simulation to HH:MM format used in .csv file containing stocks data
-     * @return current time in form HH:MM
-     */
-    public String convertTimeToString() {
-        // todo
-        return "";
     }
 
     public boolean isRunning() {
@@ -161,11 +173,23 @@ public class Simulation {
         this.time_rate = time_rate;
     }
 
-    public int getData() {
+    public Data getData() {
         return data;
     }
 
     public int getTime() {
         return time;
+    }
+
+    public int getDefault_investor_number() {
+        return default_investor_number;
+    }
+
+    public void add1ToDefaultInvestorNumber() {
+        default_investor_number++;
+    }
+
+    public String getTime_string() {
+        return time_string;
     }
 }
