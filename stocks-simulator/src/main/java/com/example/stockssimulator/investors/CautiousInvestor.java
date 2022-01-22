@@ -13,7 +13,7 @@ public class CautiousInvestor extends Investor {
      */
     public CautiousInvestor(Simulation simulation) {
         // todo - adjust values, update javadoc if changed
-        super(simulation, "Cautious-" + number, 7, 3, 4, 2, 20, 10);
+        super(simulation, "Cautious-" + number, 0.0f, 7, 3, 4, 2, 20, 10);
         number++;
     }
 }

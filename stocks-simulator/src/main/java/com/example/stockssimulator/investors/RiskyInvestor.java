@@ -13,7 +13,7 @@ public class RiskyInvestor extends Investor {
      */
     public RiskyInvestor(Simulation simulation) {
         // todo - adjust values, update javadoc if changed
-        super(simulation, "Risky-" + number, 20, 8, 10, 6, 35, 20);
+        super(simulation, "Risky-" + number, 0.0f, 20, 8, 10, 6, 35, 20);
         number++;
     }
 }

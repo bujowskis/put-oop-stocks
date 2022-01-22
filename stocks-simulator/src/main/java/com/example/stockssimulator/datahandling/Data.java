@@ -13,16 +13,17 @@ import java.util.*;
  * Contains the data relevant for the simulation (i.e. Stocks info), and provides functionalities how to obtain it.
  */
 public class Data {
-	private Simulation simulation;
+	private final Simulation simulation;
 	private HashMap<String, Stock> stocks;
+	private ArrayList<Stock> stocks_al;
 	private ArrayList<Stock> stocks_available; // all available stocks (given as tickers) to add to stocks
 	private String stocks_path; 			// todo - add getting relative path OR prompt user to specify where data is
 	private String stocks_available_path; 	// todo - as above
 	private int next_available_idx; // remembers index of the next stock available for adding
-	private int start_time = convertTimeStringToInt("9:30"); 	// todo - add relative check instead of hardcoded
-	private int end_time = convertTimeStringToInt("15:59"); 	// todo - add relative check instead of hardcoded
+	private final int start_time = convertTimeStringToInt("9:30"); 	// todo - add relative check instead of hardcoded
+	private final int end_time = convertTimeStringToInt("15:59"); 	// todo - add relative check instead of hardcoded
 	// checking the data
-	private int duration = -1;
+	private int duration = 390; // todo - not hardcoded?
 
 	/**
 	 * Creates Data used by the Simulation
@@ -44,6 +45,8 @@ public class Data {
 			throw new IllegalArgumentException("no stocks available");
 		}
 		this.next_available_idx = 0;
+		this.stocks = new HashMap<>();
+		this.stocks_al = new ArrayList<>();
 	}
 
 	/**
@@ -113,12 +116,20 @@ public class Data {
 				io.printStackTrace();
 				throw new Error("IOException in addStocks");
 			} catch (IllegalArgumentException iae) {
-				// todo - add best way of handling this
-				iae.printStackTrace();
-				throw new Error("IllegalArgumentException in addStocks");
+				if (iae.getMessage().equals("!=lines_count")) {
+					// fixme - remove/handle in better way
+					System.out.println("(omitted " + next_stock.getTicker() + ")");
+					this.next_available_idx++;
+					continue;
+				} else {
+					// todo - add best way of handling this
+					iae.printStackTrace();
+					throw new Error("IllegalArgumentException in addStocks");
+				}
 			}
 			next_stock.setData_ohlcv(ohlcv_data);
 			stocks.put(next_stock.getTicker(), next_stock);
+			stocks_al.add(next_stock);
 			this.next_available_idx++;
 		}
 		return overflow;
@@ -158,7 +169,7 @@ public class Data {
 			if (this.duration == -1) {
 				this.duration = lines_count;
 			} else if (this.duration != lines_count) {
-				throw new IllegalArgumentException("Not the same count of rows across all used csv's");
+				throw new IllegalArgumentException("!=lines_count");
 			}
 		} catch (IOException io) {
 			io.printStackTrace();
@@ -172,9 +183,8 @@ public class Data {
 			// todo - add checking (all data starts at the same time)
 			// todo - add checking (all data ends at the same time)
 			String[] values = line.split(",");
-			OHLCV ohlcv = new OHLCV(values[1], values[2], values[3], values[4], values[5]);
 			values[0] = values[0].split(" ")[1];
-			hashMap.put(values[0], ohlcv);
+			hashMap.put(values[0], new OHLCV(values[1], values[2], values[3], values[4], values[5]));
 		}
 		return hashMap;
 	}
@@ -187,6 +197,16 @@ public class Data {
 	 */
 	public OHLCV getOhlcvAtTimestamp(String ticker, String timestamp) {
 		return stocks.get(ticker).getData_ohlcv().get(timestamp);
+	}
+
+	/**
+	 * Gets the close value of a given Stock, at a given timestamp, directly
+	 * @param ticker ticker of the Stock
+	 * @param timestamp timestamp as String in format "HH:MM"
+	 * @return associated close value
+	 */
+	public float getCloseAtTimestamp(String ticker, String timestamp) {
+		return stocks.get(ticker).getData_ohlcv().get(timestamp).getClose();
 	}
 
 	/**
@@ -208,7 +228,13 @@ public class Data {
 		if (!(hh <= 24)) {
 			throw new IllegalArgumentException("more than 24 hours");
 		}
-		return hh + ":" + mm_str;
+		String hh_str;
+		if (hh <= 9) {
+			hh_str = "0" + hh;
+		} else {
+			hh_str = String.valueOf(hh);
+		}
+		return hh_str + ":" + mm_str;
 	}
 
 	/**
@@ -243,5 +269,9 @@ public class Data {
 
 	public int getEnd_time() {
 		return end_time;
+	}
+
+	public ArrayList<Stock> getStocks_al() {
+		return stocks_al;
 	}
 }

@@ -57,7 +57,7 @@
                 <version>0.0.6</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
+                        <!-- Default configuration for running with: mvn clean javafx:startTrading -->
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>com.example.stockssimulator/com.example.stockssimulator.MainScreen

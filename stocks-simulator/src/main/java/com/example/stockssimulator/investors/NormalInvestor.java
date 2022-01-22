@@ -13,7 +13,7 @@ public class NormalInvestor extends Investor {
      */
     public NormalInvestor(Simulation simulation) {
         // todo - adjust values, update javadoc if changed
-        super(simulation, "Normal-" + number, 15, 5, 8, 4, 30, 15);
+        super(simulation, "Normal-" + number, 0.0f, 15, 5, 8, 4, 30, 15);
         number++;
     }
 }

@@ -36,6 +36,7 @@ public class MainScreen extends Application {
         stage.setTitle("Stocks Simulator");
         stage.setScene(scene);
         stage.show();
+        launchSimulation(); // todo - remove after fixme in function
     }
 
     /**
@@ -45,6 +46,12 @@ public class MainScreen extends Application {
      */
     public static void main(String[] args) {
         launch();
+    }
+
+    // fixme - make properly
+    public void launchSimulation() {
+        this.simulation = new Simulation(this, 10, 0, 1, 0, 0);
+        simulation.start();
     }
 
     public Simulation getSimulation() {

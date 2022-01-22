@@ -13,7 +13,7 @@ public class CrazyInvestor extends Investor {
      */
     public CrazyInvestor(Simulation simulation) {
         // todo - adjust values, update javadoc if changed
-        super(simulation, "Crazy-" + number, 30, 20, 20, 15, 35, 20);
+        super(simulation, "Crazy-" + number, 0.0f, 30, 20, 20, 15, 35, 20);
         number++;
     }
 }

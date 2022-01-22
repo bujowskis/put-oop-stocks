@@ -13,7 +13,7 @@ import java.lang.Math;
  * Keeps the MainScreen clean and separated from "the backend".
  */
 public class Simulation {
-    private MainScreen mainScreen;
+    private final MainScreen mainScreen;
     private boolean running = false;
     private boolean finished = false;
     // private boolean paused = false; // todo - consider pause option
@@ -21,10 +21,10 @@ public class Simulation {
     private final float[] default_investors_proportions = {0.2f, 0.5f, 0.2f, 0.1f}; // todo - adjust (see javadoc below)
     private int default_investor_number = 0;
     private int time;
-    private String time_string; // todo
-    private int end_time;
-    private int time_rate = 1;
+    private String time_string;
+    private int time_rate = 30; // todo
     private final Data data;
+    private SimulationThread simulationThread;
 
     /**
      * Creates a new instance of Simulation.
@@ -45,8 +45,8 @@ public class Simulation {
         }
         try {
             // todo - pass relative / user-defined path
-            this.data = new Data(this, "stocks-simulator/src/main/resources/data/",
-                    "stocks-simulator/src/main/resources/");
+            this.data = new Data(this, "C:\\Users\\sbujo\\IdeaProjects\\put-oop-stocks\\stocks-simulator\\src\\main\\resources\\data\\",
+                    "C:\\Users\\sbujo\\IdeaProjects\\put-oop-stocks\\stocks-simulator\\src\\main\\resources\\");
         } catch (IOException e) {
             // todo - add best handling
             e.printStackTrace();
@@ -62,7 +62,6 @@ public class Simulation {
         stocks_no = this.data.getStocks().size();
         this.time = this.data.getStart_time();
         this.time_string = Data.convertTimeIntToString(this.time);
-        this.end_time = this.data.getEnd_time();
 
         int[] investors_numbers = new int[4];
         switch (investors_no.length) {
@@ -121,16 +120,16 @@ public class Simulation {
         this.mainScreen = mainScreen;
         ArrayList<Investor> investors = new ArrayList<>();
         while (investors_numbers[0]-- > 0) {
-            investors.add(new CautiousInvestor(mainScreen.getSimulation()));
+            investors.add(new CautiousInvestor(this));
         }
         while (investors_numbers[1]-- > 0) {
-            investors.add(new NormalInvestor(mainScreen.getSimulation()));
+            investors.add(new NormalInvestor(this));
         }
         while (investors_numbers[2]-- > 0) {
-            investors.add(new RiskyInvestor(mainScreen.getSimulation()));
+            investors.add(new RiskyInvestor(this));
         }
         while (investors_numbers[3]-- > 0) {
-            investors.add(new CrazyInvestor(mainScreen.getSimulation()));
+            investors.add(new CrazyInvestor(this));
         }
         this.investors = investors;
     }
@@ -139,11 +138,66 @@ public class Simulation {
      * Starts the simulation process
      */
     public void start() {
-        // todo
+        simulationThread = new SimulationThread();
+        simulationThread.start();
+    }
+
+    /**
+     * Interrupts all the Investors' trading threads
+     * Investors' handle what was the cause
+     */
+    private void interruptAllInvestors() {
+        for (Investor investor : investors) {
+            investor.getTradeOnThread().interrupt();
+        }
+    }
+
+    public class SimulationThread extends Thread {
+        public void run() {
+            running = true;
+            // invoke investors' threads
+            for (Investor investor : investors) {
+                investor.startTrading();
+            }
+            while (true) {
+                try {
+                    sleep(60000 / time_rate);
+                    if (time + 1 >= data.getEnd_time()) {
+                        finished = true;
+                        running = false;
+                        interruptAllInvestors();
+                        return;
+                    } else {
+                        System.out.println("***** *** " + time_string);
+                        time += 1;
+                        time_string = Data.convertTimeIntToString(time);
+                    }
+                    // todo - remove after testing
+                    if (time_string.equals("09:40")) {
+                        System.out.println("***** *** (changing time_rate)");
+                        setTime_rate(20);
+                    }
+                    if (time_string.equals("09:45")) {
+                        System.out.println("***** *** (try forcing end)");
+                        time = Data.convertTimeStringToInt("16:00");
+                    }
+                } catch (InterruptedException e) {
+                    System.out.println("***** *** - investors interrupted");
+                    interruptAllInvestors();
+                    if (finished) {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public boolean isRunning() {
         return this.running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     public ArrayList<Investor> getInvestors() {
@@ -166,11 +220,18 @@ public class Simulation {
         return time_rate;
     }
 
+    /**
+     * NOTE - SimulationThread.interrupt() is handled on SimulationThread's side
+     * @param time_rate new time rate
+     */
     public void setTime_rate(int time_rate) {
         if (time_rate < 1) {
             throw new Error("lowest time_rate is 1min/1min");
         }
         this.time_rate = time_rate;
+        if (simulationThread != null) {
+            this.simulationThread.interrupt();
+        }
     }
 
     public Data getData() {

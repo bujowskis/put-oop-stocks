@@ -1,7 +1,6 @@
 package com.example.stockssimulator.datahandling;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Holds all the necessary info about a particular stock
@@ -50,6 +49,15 @@ public class Stock {
 
     public String getCountry_name() {
         return country_name;
+    }
+
+    /**
+     * Directly access close value at given time
+     * @param time time we're interested in
+     * @return close value at given time
+     */
+    public float getCloseAtTime(String time) {
+        return data_ohlcv.get(time).getClose();
     }
 
     public HashMap<String, OHLCV> getData_ohlcv() throws NullPointerException {

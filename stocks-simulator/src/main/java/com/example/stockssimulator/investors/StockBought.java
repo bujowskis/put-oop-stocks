@@ -1,26 +1,30 @@
 package com.example.stockssimulator.investors;
 
+import com.example.stockssimulator.datahandling.Stock;
+
 /**
  * A single order of some specific stock, that an Investor owns
  *
  * The Investor buys stocks as StockBought objects, specifying the
- * todo - make it private for Investor (?)
  */
 public class StockBought {
     // surely final
-    private final String ticker;
+    private final Stock stock;
     private final float initial_value;
     private final int initial_time;
     // (at least for now) left non-final, may be altered during simulation
     private float gain_bound;
     private float loss_bound;
     private int wait_time;
-    private float volume; // todo - consider final
+    private final float volume;
 
-    public StockBought(String ticker, float initial_value, int initial_time, float gain_bound, float loss_bound,
+    public StockBought(Stock stock, float initial_value, int initial_time, float gain_bound, float loss_bound,
                        int wait_time, float volume) {
-        this.ticker = ticker;
-        this.initial_value = initial_value;
+        if (stock == null) {
+            throw new Error("stock=null");
+        }
+        this.stock = stock;
+        this.initial_value = initial_value; // todo - could be accessed from stock directly
         this.initial_time = initial_time;
         this.gain_bound = gain_bound;
         this.loss_bound = loss_bound;
@@ -61,10 +65,6 @@ public class StockBought {
         return current_time - initial_time >= wait_time;
     }
 
-    public String getTicker() {
-        return ticker;
-    }
-
     public float getInitial_value() {
         return initial_value;
     }
@@ -101,7 +101,7 @@ public class StockBought {
         return volume;
     }
 
-    public void setVolume(float volume) {
-        this.volume = volume;
+    public Stock getStock() {
+        return stock;
     }
 }
