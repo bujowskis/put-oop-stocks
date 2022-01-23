@@ -98,13 +98,15 @@ public class Data {
 	/**
 	 * Adds given amounts of randomly selected Stocks into the Data (and thus, into the Simulation).
 	 * If total count of added stocks exceeds the count of available stocks, it doesn't add any more Stocks.
-	 * @return boolean value stating if "available stocks overflow" encountered
+	 * @return int containing number of stocks added; -1 if no more stocks can be added
 	 */
-	public boolean addStocks(int count) {
-		boolean overflow = false;
+	public int addStocks(int count) {
+		if (next_available_idx >= stocks_available.size()) {
+			return -1;
+		}
+		int added = 0;
 		for (int i = 0; i < count; i++) {
 			if (next_available_idx >= stocks_available.size()) {
-				overflow = true;
 				break;
 			}
 			Stock next_stock = stocks_available.get(next_available_idx);
@@ -117,8 +119,6 @@ public class Data {
 				throw new Error("IOException in addStocks");
 			} catch (IllegalArgumentException iae) {
 				if (iae.getMessage().equals("!=lines_count")) {
-					// fixme - remove/handle in better way
-					System.out.println("(omitted " + next_stock.getTicker() + ")");
 					this.next_available_idx++;
 					continue;
 				} else {
@@ -131,8 +131,9 @@ public class Data {
 			stocks.put(next_stock.getTicker(), next_stock);
 			stocks_al.add(next_stock);
 			this.next_available_idx++;
+			added++;
 		}
-		return overflow;
+		return added;
 	}
 
 	/**

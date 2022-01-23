@@ -4,9 +4,9 @@ import com.example.stockssimulator.Simulation;
 import com.example.stockssimulator.datahandling.Data;
 import com.example.stockssimulator.datahandling.OHLCV;
 import com.example.stockssimulator.datahandling.Stock;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -92,6 +92,7 @@ public abstract class Investor {
         } else {
             this.money = money;
         }
+        random.setSeed(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)); // todo - could be done once
         this.initial_money = this.money;
         this.risk_gain_upper = risk_gain_upper;
         this.risk_gain_lower = risk_gain_lower;

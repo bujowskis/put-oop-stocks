@@ -50,7 +50,7 @@ public class MainScreen extends Application {
 
     // fixme - make properly
     public void launchSimulation() {
-        this.simulation = new Simulation(this, 10, 0, 1, 0, 0);
+        this.simulation = new Simulation(this, 60, 0, 1, 0, 0);
         simulation.start();
     }
 

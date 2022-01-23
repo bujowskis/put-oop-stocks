@@ -40,7 +40,7 @@ public class Simulation {
         if (mainScreen == null) {
             throw new Error("mainScreen=null");
         }
-        if (stocks_no < 1) { // todo - add upper limit based on csv
+        if (stocks_no < 1) {
             throw new IllegalArgumentException("stocks_no<1");
         }
         try {
@@ -55,11 +55,23 @@ public class Simulation {
             // todo - add best handling
             throw new Error("IllegalArgumentException - didn't initialize Data");
         }
-        boolean overflow = this.data.addStocks(stocks_no);
-        if (overflow) {
-            // todo - consider doing something here
+        int added = this.data.addStocks(stocks_no);
+        while (data.getStocks_al().size() != stocks_no) {
+            if (added == -1) {
+                if (data.getStocks_al().size() == 0) {
+                    throw new IllegalArgumentException("couldn't read any stocks");
+                } else {
+                    // todo - inform in gui
+                    System.out.println("***** *** - can't add as many stocks, added: " + data.getStocks_al().size() + " instead of " + stocks_no);
+                    break;
+                }
+            } else {
+                // try adding the next ones
+                added = this.data.addStocks(stocks_no - data.getStocks_al().size());
+            }
         }
         stocks_no = this.data.getStocks().size();
+        System.out.println("***** *** - stocks in the simulation: " + stocks_no);
         this.time = this.data.getStart_time();
         this.time_string = Data.convertTimeIntToString(this.time);
 
@@ -175,9 +187,9 @@ public class Simulation {
                     // todo - remove after testing
                     if (time_string.equals("09:40")) {
                         System.out.println("***** *** (changing time_rate)");
-                        setTime_rate(20);
+                        setTime_rate(300);
                     }
-                    if (time_string.equals("09:45")) {
+                    if (time_string.equals("12:00")) {
                         System.out.println("***** *** (try forcing end)");
                         time = Data.convertTimeStringToInt("16:00");
                     }
