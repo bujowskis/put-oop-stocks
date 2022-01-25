@@ -3,12 +3,9 @@ package com.example.stockssimulator.uicomponents;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class Button1 {
-    @FXML
-    private Label welcomeText;
-
+public class ButtonLaunch {
     @FXML
     protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+        // todo
     }
 }
