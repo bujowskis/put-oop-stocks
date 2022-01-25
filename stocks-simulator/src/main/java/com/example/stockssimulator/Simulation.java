@@ -35,7 +35,8 @@ public class Simulation {
      *                     - single int - investors number given, but number of Investors types deduced based on default proportions
      *                     - four ints given, number of particular Investors types given (Cautious, Normal, Risky, Crazy)
      */
-    public Simulation(MainScreen mainScreen, int stocks_no, int... investors_no) throws IllegalArgumentException {
+    public Simulation(MainScreen mainScreen, String path_data, String path_company, int stocks_no, int... investors_no)
+            throws IllegalArgumentException {
         // check the inputs
         if (mainScreen == null) {
             throw new Error("mainScreen=null");
@@ -45,15 +46,13 @@ public class Simulation {
         }
         try {
             // todo - pass relative / user-defined path
-            this.data = new Data(this, "C:\\Users\\sbujo\\IdeaProjects\\put-oop-stocks\\stocks-simulator\\src\\main\\resources\\data\\",
-                    "C:\\Users\\sbujo\\IdeaProjects\\put-oop-stocks\\stocks-simulator\\src\\main\\resources\\");
+            this.data = new Data(this, path_data, path_company);
         } catch (IOException e) {
             // todo - add best handling
-            e.printStackTrace();
-            throw new Error("IOException - didn't initialize Data");
+            throw new IllegalArgumentException("IOException");
         } catch (IllegalArgumentException iae) {
             // todo - add best handling
-            throw new Error("IllegalArgumentException - didn't initialize Data");
+            throw new IllegalArgumentException("IllegalArgumentException");
         }
         int added = this.data.addStocks(stocks_no);
         while (data.getStocks_al().size() != stocks_no) {

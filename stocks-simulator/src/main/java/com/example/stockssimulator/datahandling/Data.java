@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-// todo - add functions fetching data needed for plotting and such
 /**
  * Contains the data relevant for the simulation (i.e. Stocks info), and provides functionalities how to obtain it.
  */
@@ -17,8 +16,8 @@ public class Data {
 	private HashMap<String, Stock> stocks;
 	private ArrayList<Stock> stocks_al;
 	private ArrayList<Stock> stocks_available; // all available stocks (given as tickers) to add to stocks
-	private String stocks_path; 			// todo - add getting relative path OR prompt user to specify where data is
-	private String stocks_available_path; 	// todo - as above
+	private String stocks_path;	// todo - paths could be relative
+	private String stocks_available_path;
 	private int next_available_idx; // remembers index of the next stock available for adding
 	private final int start_time = convertTimeStringToInt("9:30"); 	// todo - add relative check instead of hardcoded
 	private final int end_time = convertTimeStringToInt("15:59"); 	// todo - add relative check instead of hardcoded
@@ -61,11 +60,8 @@ public class Data {
 		// read the csv by rows into List of Strings
 		FileReader fr;
 		try {
-			fr = new FileReader(stocks_available_path + "Company.csv");
+			fr = new FileReader(stocks_available_path);
 		} catch (FileNotFoundException e) {
-			// todo - prompt user to enter path to data
-			//		BUT try to make it relative (then it's programming Error)
-			e.printStackTrace();
 			throw new IllegalArgumentException("Company.csv not found");
 		}
 		try (BufferedReader bf = new BufferedReader(fr)) {
@@ -80,7 +76,6 @@ public class Data {
 				line = bf.readLine();
 			}
 		} catch (IOException io) {
-			io.printStackTrace();
 			throw new IOException("Company.csv IOException");
 		}
 
@@ -115,7 +110,6 @@ public class Data {
 				ohlcv_data = readStockCsv(next_stock.getTicker());
 			} catch (IOException io) {
 				// todo - add best way of handling this
-				io.printStackTrace();
 				throw new Error("IOException in addStocks");
 			} catch (IllegalArgumentException iae) {
 				if (iae.getMessage().equals("!=lines_count")) {
@@ -123,7 +117,6 @@ public class Data {
 					continue;
 				} else {
 					// todo - add best way of handling this
-					iae.printStackTrace();
 					throw new Error("IllegalArgumentException in addStocks");
 				}
 			}
@@ -147,11 +140,8 @@ public class Data {
 		// read the csv by rows into List of Strings
 		FileReader fr;
 		try {
-			fr = new FileReader(stocks_path + ticker + ".csv");
+			fr = new FileReader(stocks_path + "\\" + ticker + ".csv");
 		} catch (FileNotFoundException e) {
-			// todo - prompt user to enter path to data
-			//		BUT try to make it relative (then it's programming Error)
-			e.printStackTrace();
 			throw new IllegalArgumentException("Couldn't find the csv associated with " + ticker + " in specified path " + stocks_path);
 		}
 		try (BufferedReader bf = new BufferedReader(fr)) {
@@ -173,7 +163,6 @@ public class Data {
 				throw new IllegalArgumentException("!=lines_count");
 			}
 		} catch (IOException io) {
-			io.printStackTrace();
 			throw new IOException("IOException while reading csv");
 		}
 

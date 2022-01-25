@@ -1,12 +1,19 @@
 package com.example.stockssimulator.uicomponents.initialization;
 
+import com.example.stockssimulator.MainScreen;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
+/**
+ * Controller for Initialization Screen
+ * Handles the input of initial parameters needed to launch the simulation
+ */
 public class InitializationController {
+    private final MainScreen mainScreen; // reference used for scene transitions and parameters passing
+
     // UI components
     @FXML
     private TextField textFieldStocksNo;
@@ -32,6 +39,10 @@ public class InitializationController {
     private TextField textFieldCrazy;
     @FXML
     private Label labelIllegalArgumentException;
+
+    public InitializationController(MainScreen mainScreen) {
+        this.mainScreen = mainScreen;
+    }
 
     // functionalities
     @FXML
@@ -61,7 +72,6 @@ public class InitializationController {
 
     @FXML
     protected void launchSimulation() {
-        // todo - start simulation and switch to new scene
         labelIllegalArgumentException.setVisible(false);
         int stocks_no;
         try {
@@ -81,7 +91,12 @@ public class InitializationController {
             return;
         }
         if (radioButtonStocksOnly.isSelected()) {
-            // todo - launch
+            try {
+                mainScreen.launchSimulation(textFieldPathData.getText(), textFieldPathCompany.getText(), stocks_no);
+            } catch (IllegalArgumentException e) {
+                labelIllegalArgumentException.setText("(most probably) paths do not contain needed files");
+                labelIllegalArgumentException.setVisible(true);
+            }
         } else if (radioButtonStocksInvestorsNo.isSelected()) {
             int investors_no;
             try {
@@ -94,7 +109,13 @@ public class InitializationController {
                 labelIllegalArgumentException.setVisible(true);
                 return;
             }
-            // todo - launch
+            try {
+                mainScreen.launchSimulation(textFieldPathData.getText(), textFieldPathCompany.getText(), stocks_no,
+                        investors_no);
+            } catch (IllegalArgumentException e) {
+                labelIllegalArgumentException.setText("(most probably) paths do not contain needed files");
+                labelIllegalArgumentException.setVisible(true);
+            }
         } else if (radioButtonStocksInvestorsByType.isSelected()) {
             int cautious;
             int normal;
@@ -113,7 +134,13 @@ public class InitializationController {
                 labelIllegalArgumentException.setVisible(true);
                 return;
             }
-            // todo - launch
+            try {
+                mainScreen.launchSimulation(textFieldPathData.getText(), textFieldPathCompany.getText(), stocks_no,
+                        cautious, normal, risky, crazy);
+            } catch (IllegalArgumentException e) {
+                labelIllegalArgumentException.setText("(most probably) paths do not contain needed files");
+                labelIllegalArgumentException.setVisible(true);
+            }
         } else {
             throw new Error("the impossible happened");
         }

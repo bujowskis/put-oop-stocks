@@ -1,6 +1,8 @@
 package com.example.stockssimulator;
 
+import com.example.stockssimulator.uicomponents.initialization.InitializationController;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -31,6 +33,7 @@ public class MainScreen extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainScreen.class.getResource("start-view.fxml"));
+        fxmlLoader.setControllerFactory(c -> new InitializationController(this));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
         stage.setTitle("Stocks Simulator");
         stage.setScene(scene);
@@ -40,15 +43,25 @@ public class MainScreen extends Application {
     /**
      * The main function of the whole application. It launches it and combines all the other functionalities to form the
      * final product
-     * @param args
      */
     public static void main(String[] args) {
         launch();
     }
 
-    // fixme - make properly
-    public void launchSimulation() {
-        this.simulation = new Simulation(this, 60, 0, 1, 0, 0);
+    public void launchSimulation(String path_data, String path_company, int stocks_no) throws IllegalArgumentException {
+        this.simulation = new Simulation(this, path_data, path_company, stocks_no);
+        simulation.start();
+    }
+
+    public void launchSimulation(String path_data, String path_company, int stocks_no, int investors_no)
+            throws IllegalArgumentException {
+        this.simulation = new Simulation(this, path_data, path_company, stocks_no, investors_no);
+        simulation.start();
+    }
+
+    public void launchSimulation(String path_data, String path_company, int stocks_no,
+                                 int cautious, int normal, int risky, int crazy) throws IllegalArgumentException {
+        this.simulation = new Simulation(this, path_data, path_company, stocks_no, normal, risky, crazy);
         simulation.start();
     }
 
