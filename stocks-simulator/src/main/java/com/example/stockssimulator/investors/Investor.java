@@ -126,18 +126,21 @@ public abstract class Investor {
             } catch (InterruptedException e) {
                 if (simulation.isFinished()) {
                     // sell all stocks, wrap things up
-                    for (StockBought stock_bought : stockBoughtAL) {
-                        sellStock(stock_bought);
+                    while (!stockBoughtAL.isEmpty()) {
+                        sellStock(stockBoughtAL.get(stockBoughtAL.size() - 1));
                     }
+                    System.out.println(nickname + " - money at end: " + money);
+                    this.stop();
                 } else {
                     // continue with new time_rate
                     run();
                 }
             }
             while (true) {
+                System.out.println("\tInvestor" + nickname + " woke up");
                 checkStocksBought();
                 tryBuyRandomStock();
-                System.out.println(nickname + ":\n" + money + "\n" + stockBoughtAL.toString());
+                System.out.println("\t\tmoney now: " + money + "\n" + stockBoughtAL.toString());
                 try {
                     sleep((long) 60000 / simulation.getTime_rate() * (1 + random.nextInt(5)));
                 } catch (InterruptedException e) {
@@ -154,7 +157,6 @@ public abstract class Investor {
                         run();
                     }
                 }
-                System.out.println("\t(loop completed)");
             }
         }
     }
@@ -203,13 +205,14 @@ public abstract class Investor {
         money -= amount;
         stockBoughtAL.add(new StockBought(stock, current_price, simulation.getTime(), randomizeGain(), randomizeLoss(),
                 randomizeWaitTime(), volume));
+        System.out.println("\t\t(bought " + volume + " of " + stock.getTicker() + ")");
     }
 
     /**
      * Sells the given stock
      */
     private void sellStock(StockBought stock) {
-        System.out.println("\t(sold stock " + stock.getStock().getTicker());
+        System.out.println("\t\t(sold stock " + stock.getStock().getTicker() + ")");
         boolean removed = this.stockBoughtAL.remove(stock);
         if (!removed) {
             // could be handled, but I try to be strict and make sure everything works as intended
@@ -217,6 +220,7 @@ public abstract class Investor {
         }
         this.money += stock.getVolume() * this.simulation.getData().getCloseAtTimestamp(
                 stock.getStock().getTicker(), this.simulation.getTime_string());
+        System.out.println("\t\t(sold stock " + stock.getStock().getTicker() + ")");
     }
 
     /**
