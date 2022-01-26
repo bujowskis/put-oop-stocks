@@ -113,6 +113,7 @@ public abstract class Investor {
             throw new Error("Cannot startTrading investor, when simulation is not started or uninitialized");
         }
         tradeOnThread = new TradeOnThread();
+        tradeOnThread.setDaemon(true);
         tradeOnThread.start();
     }
 

@@ -9,4 +9,6 @@ module com.example.stockssimulator {
     opens com.example.stockssimulator.investors to javafx.fxml;
     exports com.example.stockssimulator.uicomponents.initialization;
     opens com.example.stockssimulator.uicomponents.initialization to javafx.fxml;
+    opens com.example.stockssimulator.uicomponents.simulation;
+    exports com.example.stockssimulator.uicomponents.simulation to javafx.fxml;
 }

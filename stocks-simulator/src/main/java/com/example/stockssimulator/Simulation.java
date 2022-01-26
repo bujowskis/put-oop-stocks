@@ -150,6 +150,7 @@ public class Simulation {
      */
     public void start() {
         simulationThread = new SimulationThread();
+        simulationThread.setDaemon(true);
         simulationThread.start();
     }
 
